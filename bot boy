@@ -1,0 +1,67 @@
+import discord
+import random
+client = discord.Client()
+
+
+
+
+@client.event
+async def on_message(message):
+
+    id = client.get_guild(550845216525910016)
+
+    if message.content.find('$hello') != -1:
+        await message.channel.send('hello and welcome to sample bot! type $help for more...')
+    elif message.content == '$users':
+        await message.channel.send(f"""There are {id.member_count} members on this server!""")
+    elif message.content.find('$guess')!= -1:
+        guesses = 3
+        hints = 1
+        rng = random.randint(0, 10)
+        print(rng)
+        await message.channel.send(f'''you have {guesses} guesses and {hints} hint to try and guess my number''')
+        guess_game = 1
+        await message.channel.send('guess the number or say hint')
+        while guess_game == 1:
+                 # if you get it right
+                if message.content == (f'''{rng and guesses > 0}'''):
+                    await message.channel.send(
+                        f'''good job you got the number {rng} in {guesses} guesses and {hints} hints''')
+                    guess_game = 0
+                # if you lost
+                elif guesses == 0:
+                    await message.channel.send(f'''game over! the number was {rng}''')
+                    guess_game = 0
+                # if you ask for hint without guessing
+                elif message.content == 'hint' and hints == 1 and guesses == 3:
+                    await message.channel.send('sorry, but you need to guess a number first')
+                    # if you ask for hint without hints
+                elif message.content == 'hint' and hints == 0:
+                    await message.channel.send('sorry but you are all out of hints')
+                # if it's wrong
+                elif message.content != rng and not '$guess':
+                    guesses = guesses - 1
+                    await message.channel.send(f'''that is incorrect you have {guesses} guesses''')
+                # if you ask for hints
+                elif message.content == 'hint' and guesses > 0 and guesses < 3 and hints == 1:
+                    # if the num is greater than rng
+                    if message.content > rng:
+                        message.channel.send('your number is less than the last number you guessed')
+                        hints = 0
+                    # if num is lower than rng
+                    elif message.content < rng:
+                        message.channel.send('your number is greater than the last number you guessed')
+                        hints = 0
+                    else:
+                        pass
+    elif message.content == '$games':
+        embed = discord.Embed(title='games', description='w.i.p')
+        embed.add_field(name='###', value='games give no effect to profile')
+        await message.channel.send(content=None, embed=embed)
+    elif message.content == ('$help'):
+        embed = discord.Embed(title="Main", description="here are some commands")
+        embed.add_field(name='basic commands', value='type $hello to view the greeting type $help to view this menu')
+        embed.add_field(name="user commands", value='type $users to view the users on the server')
+        await message.channel.send(content=None,  embed=embed)
+
+client.run('NTUwODQ1NjgxNDg5ODA1MzM0.D1ysEg.7_G5pFdVrNHdOfaNSJUwyo4gf2k')
